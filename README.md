@@ -70,7 +70,7 @@ Follow these steps to set up and run the project locally:
     ```
 
 6. **Open your browser and navigate to [http://localhost:8000/display/](http://localhost:8000/display/) to view the option chain data.**
-
+![Workflow Diagram](workflow.png)
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
