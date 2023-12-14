@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option Chain Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        th{
+            font-weight: bold;
+            background-color: rgb(176, 176, 204);
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        table {
+            font-size: 10px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container {
+            overflow: hidden;
+            margin-top: 20px;
+            max-width: 90%;
+            margin: 0 auto;
+            position: relative;
+        }
+        .table-heading{       
+            position: sticky;
+            top: 0;
+            background-color: #f8f8f8;
+            z-index: 1;
+        }
+
+        .table-header {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #f8f8f8;
+        }
+
+        .scrollable-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .puts {
+            color: blue;
+        }
+
+        .calls {
+            color: red;
+        }
+
+        .table-container table thead  {
+            background-color: #f8f8f8;
+        }
+
+        .table-container table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        .scrollable-div {
+            width: 300px; 
+            height: 200px; 
+            overflow: auto; 
+            border: 1px solid #ccc; 
+}
+
+        #disappearingDiv {
+            display: none;
+            background-color: lightblue;
+            padding: 20px;
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <h1>Option Chain Data</h1>
+        <button onclick="refreshPage()"><i style="color: white;" class="fa-sharp fa-solid fa-arrows-rotate"></i></button>
+    </div>
+
+    <div class="update">
+        <div id="disappearingDiv">This Data is updated at {{time}}</div>
+    </div>
+
+    <div class="table-container">
+        <table border="1">
+            <thead class="table-headers">
+                <tr>
+                    <th>Strike Price</th>
+                    <th class="calls">Open Interest (Calls)</th>
+                    <th class="calls">Change in Open Interest (Calls)</th>
+                    <th class="calls">Total Traded Volume (Calls)</th>
+                    <th class="calls">Implied Volatility (Calls)</th>
+                    <th class="calls">Last Price (Calls)</th>
+                    <th class="calls">Change (Calls)</th>
+                    <th class="calls">Bid Quantity (Calls)</th>
+                    <th class="calls">Bid Price (Calls)</th>
+                    <th class="calls">Ask Price (Calls)</th>
+                    <th class="calls">Ask Quantity (Calls)</th>
+                    <th class="puts">Open Interest (Puts)</th>
+                    <th class="puts">Change in Open Interest (Puts)</th>
+                    <th class="puts">Total Traded Volume (Puts)</th>
+                    <th class="puts">Implied Volatility (Puts)</th>
+                    <th class="puts">Last Price (Puts)</th>
+                    <th class="puts">Change (Puts)</th>
+                    <th class="puts">Bid Quantity (Puts)</th>
+                    <th class="puts">Bid Price (Puts)</th>
+                    <th class="puts">Ask Price (Puts)</th>
+                    <th class="puts">Ask Quantity (Puts)</th>
+                </tr>
+            </thead>
+                <div class="scrollabe-div">
+                    <tbody class="scrollable-body">
+                        {% for option_entry in option_chain_data %}
+                            <tr>
+                                <td>{{ option_entry.STRIKE }}</td>
+                                <td class="calls">{{ option_entry.OI_calls }}</td>
+                                <td class="calls">{{ option_entry.CHNG_IN_OI_calls }}</td>
+                                <td class="calls">{{ option_entry.VOLUME_calls }}</td>
+                                <td class="calls">{{ option_entry.IV_calls }}</td>
+                                <td class="calls">{{ option_entry.LTP_calls }}</td>
+                                <td class="calls">{{ option_entry.CHNG_calls }}</td>
+                                <td class="calls">{{ option_entry.BID_QTY_calls }}</td>
+                                <td class="calls">{{ option_entry.BID_calls }}</td>
+                                <td class="calls">{{ option_entry.ASK_calls }}</td>
+                                <td class="calls">{{ option_entry.ASK_QTY_calls }}</td>
+                                <td class="puts">{{ option_entry.OI_puts }}</td>
+                                <td class="puts">{{ option_entry.CHNG_IN_OI_puts }}</td>
+                                <td class="puts">{{ option_entry.VOLUME_puts }}</td>
+                                <td class="puts">{{ option_entry.IV_puts }}</td>
+                                <td class="puts">{{ option_entry.LTP_puts }}</td>
+                                <td class="puts">{{ option_entry.CHNG_puts }}</td>
+                                <td class="puts">{{ option_entry.BID_QTY_puts }}</td>
+                                <td class="puts">{{ option_entry.BID_puts }}</td>
+                                <td class="puts">{{ option_entry.ASK_puts }}</td>
+                                <td class="puts">{{ option_entry.ASK_QTY_puts }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </div>
+        </table>
+    </div>
+
+    <script>
+        const tableContainer = document.querySelector('.table-container');
+        const tableHeadings = document.querySelector('.table-headings');
+
+        tableContainer.addEventListener('scroll', function() {
+            const scrollLeft = tableContainer.scrollLeft;
+            tableHeadings.style.transform = `translateX(-${scrollLeft}px)`;
+        });
+
+        function refreshPage() {
+            location.reload(true);
+        }
+        window.onload = function() {
+            var disappearingDiv = document.getElementById('disappearingDiv');
+            disappearingDiv.style.display = 'block';
+            setTimeout(function() {
+                disappearingDiv.style.display = 'none';
+            }, 8000);
+        };
+    </script>
+</body>
+</html>
+```
